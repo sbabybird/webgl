@@ -2,6 +2,9 @@
 Thumbs.db
 ehthumbs.db
 
+# bower_components
+./bower_components/*
+
 # Folder config file
 Desktop.ini
 

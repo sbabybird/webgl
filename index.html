@@ -25,7 +25,11 @@
     gl.useProgram(program);
 
     // look up where the vertex data needs to go.
-    var positionLocation = gl.getAttribLocation(program, "a_position");
+    var positionLocation = gl.getAttribLocation(program, "aPosition");
+
+    // set the resolution
+    var resolutionLocation = gl.getUniformLocation(program, "uResolution");
+    gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
 
     // Create a buffer and put a single clipspace rectangle in
     // it (2 triangles)
@@ -49,17 +53,43 @@
       });
       </script>
       <script id="2d-vertex-shader" type="x-shader/x-vertex">
-      attribute vec2 a_position;
+      attribute vec2 aPosition;
 
       void main() {
-        gl_Position = vec4(a_position, 0, 1);
+        gl_Position = vec4(aPosition, 0, 1);
       }
       </script>
 
       <script id="2d-fragment-shader" type="x-shader/x-fragment">
+      precision mediump float;
+      uniform vec2 uResolution;
+
       void main() {
-        gl_FragColor = vec4(0, 1, 0, 1);  // green
-      }
-      </script>
+        // gl_FragColor = vec4(0., 0., 1., 1.);
+        vec2 uv = gl_FragCoord.xy/uResolution.xy;
+        float gradient = (uv.x+uv.y)/2.;
+        gl_FragColor = vec4(0., gradient, 0., 1.);
+
+        // vec2 center = vec2(iResolution.x/2., iResolution.y/2.);
+        // float radius = iResolution.y/2.;
+        // vec2 position = fragCoord.xy - center;
+        //
+        // if (length(position) > radius /*|| length(position) < radius-5.*/) {
+        //   //discard;
+        // } else {
+        //   float z = sqrt(radius*radius - position.x*position.x - position.y*position.y);
+        //   vec3 normal = normalize(vec3(position.x, position.y, z));
+        //   vec3 cLight = normalize(vec3(.5, .5, 1.));
+        //   float diffuse = max(0., dot(normal, cLight));
+        //   gl_FragColor = vec4(vec3(diffuse+1.)/2., 1.);
+        // }
+        //
+        // float t = iGlobalTime/4.;
+        // if (t>1.) {
+        //   t -= floor(t);
+        // }
+        // gl_FragColor = vec4(vec3(t), 1.);
+    }
+    </script>
   </body>
 </html>
